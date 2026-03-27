@@ -7,7 +7,7 @@ class Action(BaseModel):
 
 class Observation(BaseModel):
     logs: str
-    metrics: Dict[str, float]
+    metrics: Dict[str, dict] 
     alerts: List[str]
     service_status: str
 
