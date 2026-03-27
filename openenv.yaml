@@ -1,1 +1,16 @@
+name: devops-incident-env
+description: AI DevOps Incident Response Simulator
+version: 1.0
 
+actions:
+  - action_type: string
+  - target: string
+
+observation:
+  logs: string
+  metrics: dict
+  alerts: list
+  service_status: string
+
+reward:
+  value: float
