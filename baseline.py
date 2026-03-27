@@ -7,6 +7,10 @@ def run_baseline():
     for task in ["easy", "medium", "hard"]:
         obs = env.reset(task)
 
+        # step 1: investigate
+        env.step({"action_type": "investigate", "target": "service"})
+
+        # step 2: decision
         if "CPU" in obs.logs:
             action = {"action_type": "scale_up", "target": "service"}
         elif "Memory" in obs.logs:
@@ -14,8 +18,8 @@ def run_baseline():
         else:
             action = {"action_type": "rollback", "target": "service"}
 
-        obs, reward, done, _ = env.step(action)
+        env.step(action)
 
-        scores[task] = 1.0 if done else 0.0
+        scores[task] = 1.0 if env.state_data["service_status"] == "healthy" else 0.0
 
     return scores
