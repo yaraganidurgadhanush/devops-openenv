@@ -26,7 +26,14 @@ def state():
 
 @app.get("/tasks")
 def tasks():
-    return ["easy", "medium", "hard"]
+    return {
+        "tasks": [
+            {"name": "easy", "description": "CPU spike"},
+            {"name": "medium", "description": "Memory leak"},
+            {"name": "hard", "description": "Deployment failure"}
+        ],
+        "actions": ["investigate", "scale_up", "restart_service", "rollback"]
+    }
 
 @app.get("/grader")
 def grader():
