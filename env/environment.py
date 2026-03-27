@@ -17,21 +17,28 @@ class DevOpsEnv:
         return self.state_data
 
     def step(self, action):
-        self.steps += 1
-        reward = 0
+    self.steps += 1
+    reward = 0
+    done = False
 
-        correct_action = action["action_type"] == self.current_task["solution"]
+    correct_solution = self.current_task["solution"]
 
-        if correct_action:
-            reward += 0.5
-            self.state_data["service_status"] = "healthy"
-            done = True
-        else:
-            reward -= 0.3
-            done = False
+    # Step 1: Investigation phase
+    if action["action_type"] == "investigate":
+        reward += 0.2
+        self.state_data["logs"] += " | Root cause identified"
+        return Observation(**self.state_data), Reward(value=reward), False, {}
 
-        # Partial reward (progress simulation)
-        if self.state_data["metrics"]["latency"] > 1000:
-            reward += 0.2
+    # Step 2: Correct action
+    if action["action_type"] == correct_solution:
+        reward += 0.6
+        self.state_data["service_status"] = "healthy"
+        done = True
+    else:
+        reward -= 0.4
 
-        return Observation(**self.state_data), Reward(value=reward), done, {}
+    # Efficiency bonus
+    if self.steps <= 2:
+        reward += 0.2
+
+    return Observation(**self.state_data), Reward(value=reward), done, {}
